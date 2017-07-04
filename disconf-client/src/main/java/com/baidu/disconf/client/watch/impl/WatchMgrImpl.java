@@ -1,5 +1,7 @@
 package com.baidu.disconf.client.watch.impl;
 
+import java.util.Map;
+
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import com.baidu.disconf.client.common.model.DisConfCommonModel;
 import com.baidu.disconf.client.config.inner.DisClientComConfig;
 import com.baidu.disconf.client.core.processor.DisconfCoreProcessor;
+import com.baidu.disconf.client.store.DisconfStoreProcessor;
+import com.baidu.disconf.client.store.DisconfStoreProcessorFactory;
 import com.baidu.disconf.client.watch.WatchMgr;
 import com.baidu.disconf.client.watch.inner.DisconfSysUpdateCallback;
 import com.baidu.disconf.client.watch.inner.NodeWatcher;
@@ -86,7 +90,7 @@ public class WatchMgrImpl implements WatchMgr {
         makePath(monitorPath, "");
 
         // 新建一个代表自己的临时结点
-        makeTempChildPath(monitorPath, value);
+        makeTempChildPath(monitorPath, value, key, disConfigTypeEnum);
 
         return monitorPath;
     }
@@ -102,13 +106,16 @@ public class WatchMgrImpl implements WatchMgr {
     /**
      * 在指定路径下创建一个临时结点
      */
-    private void makeTempChildPath(String path, String data) {
+    private void makeTempChildPath(String path, String data, String key, DisConfigTypeEnum disConfigTypeEnum) {
 
         String finerPrint = DisClientComConfig.getInstance().getInstanceFingerprint();
 
         String mainTypeFullStr = path + "/" + finerPrint;
         try {
             ZookeeperMgr.getInstance().createEphemeralNode(mainTypeFullStr, data, CreateMode.EPHEMERAL);
+            
+            storeTempChildPath(key, mainTypeFullStr, disConfigTypeEnum);
+            
         } catch (Exception e) {
             LOGGER.error("cannot create: " + mainTypeFullStr + "\t" + e.toString());
         }
@@ -139,6 +146,19 @@ public class WatchMgrImpl implements WatchMgr {
 
             LOGGER.error(e.toString());
         }
+    }
+    
+    /**
+     * 解决disconf和应用断连问题： 将标示实例的临时节点数据保存至配置仓库
+     * @param key 配置文件或配置项 名称
+     * @param mainTypeFullStr zookeeper节点全路径
+     * @param disConfigTypeEnum 配置类型
+     */
+    private void storeTempChildPath(String key, String mainTypeFullStr, DisConfigTypeEnum disConfigTypeEnum){
+    	DisconfStoreProcessor disconfStoreProcessor = DisconfStoreProcessorFactory.getDisconfStoreProcessorByType(disConfigTypeEnum);
+    	Map<String, String> tempChildPathMap = disconfStoreProcessor.getTempChildPathMap();
+        String hostName = DisClientComConfig.getInstance().getLocalHostName();
+        tempChildPathMap.put(hostName + ":" + key, mainTypeFullStr);
     }
 
 }

@@ -5,6 +5,7 @@ import com.baidu.disconf.client.core.processor.impl.DisconfItemCoreProcessorImpl
 import com.baidu.disconf.client.fetcher.FetcherMgr;
 import com.baidu.disconf.client.support.registry.Registry;
 import com.baidu.disconf.client.watch.WatchMgr;
+import com.baidu.disconf.core.common.constants.DisConfigTypeEnum;
 
 /**
  * 核心处理器工厂
@@ -31,4 +32,20 @@ public class DisconfCoreProcessorFactory {
 
         return new DisconfItemCoreProcessorImpl(watchMgr, fetcherMgr, registry);
     }
+    
+    public static DisconfCoreProcessor getDisconfCoreProcessorByType(WatchMgr watchMgr, FetcherMgr fetcherMgr, Registry registry,
+			DisConfigTypeEnum disConfigTypeEnum) {
+		DisconfCoreProcessor processor = null;
+		switch (disConfigTypeEnum) {
+		case FILE:
+			processor = getDisconfCoreProcessorFile(watchMgr, fetcherMgr, registry);
+			break;
+
+		case ITEM:
+			processor = getDisconfCoreProcessorItem(watchMgr, fetcherMgr, registry);
+			break;
+		}
+		return processor;
+	}
+    
 }

@@ -49,6 +49,9 @@ public class DisconfCenterStore {
     // key: 配置项的Key
     // value: 配置项数据
     private Map<String, DisconfCenterItem> confItemMap = new HashMap<String, DisconfCenterItem>();
+    
+  //解决disconf和应用断连问题：标示实例的临时节点  key: hostName:filename(主机名+配置文件名), value: fullzkPath(node节点全路径)
+    private Map<String, String> tempChildPathMap = new HashMap<String, String>();
 
     // 主备切换时的Key列表
     private List<String> activeBackupKeyList;
@@ -149,4 +152,13 @@ public class DisconfCenterStore {
             IDisconfUpdatePipeline iDisconfUpdatePipeline) {
         this.iDisconfUpdatePipeline = iDisconfUpdatePipeline;
     }
+
+	public Map<String, String> getTempChildPathMap() {
+		return tempChildPathMap;
+	}
+
+	public void setTempChildPathMap(Map<String, String> tempChildPathMap) {
+		this.tempChildPathMap = tempChildPathMap;
+	}
+    
 }

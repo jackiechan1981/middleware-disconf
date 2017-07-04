@@ -264,5 +264,10 @@ public class DisconfStoreItemProcessorImpl implements DisconfStoreProcessor {
             DisconfCenterStore.getInstance().excludeOneItem(key);
         }
     }
+    
+    @Override
+	public Map<String, String> getTempChildPathMap() {
+		return DisconfCenterStore.getInstance().getTempChildPathMap();
+	}
 
 }

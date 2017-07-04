@@ -304,4 +304,9 @@ public class DisconfStoreFileProcessorImpl implements DisconfStoreProcessor {
             getInstance().excludeOneFile(key);
         }
     }
+    
+    @Override
+	public Map<String, String> getTempChildPathMap() {
+		return getInstance().getTempChildPathMap();
+	}
 }

@@ -3,6 +3,7 @@ package com.baidu.disconf.client.store;
 import com.baidu.disconf.client.store.processor.impl.DisconfStoreFileProcessorImpl;
 import com.baidu.disconf.client.store.processor.impl.DisconfStoreItemProcessorImpl;
 import com.baidu.disconf.client.store.processor.impl.DisconfStorePipelineProcessorImpl;
+import com.baidu.disconf.core.common.constants.DisConfigTypeEnum;
 
 /**
  * 仓库算子仓库
@@ -35,5 +36,19 @@ public class DisconfStoreProcessorFactory {
 
         return new DisconfStorePipelineProcessorImpl();
     }
+    
+    public static DisconfStoreProcessor getDisconfStoreProcessorByType(DisConfigTypeEnum disConfigTypeEnum) {
+		DisconfStoreProcessor processor = null;
+		switch (disConfigTypeEnum) {
+		case FILE:
+			processor = getDisconfStoreFileProcessor();
+			break;
+
+		case ITEM:
+			processor = getDisconfStoreItemProcessor();
+			break;
+		}
+		return processor;
+	}
 
 }

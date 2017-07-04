@@ -74,4 +74,15 @@ public class DisClientComConfig {
         return instanceFingerprint.getHost() + "_" + String.valueOf(instanceFingerprint.getPort()) + "_" +
                 instanceFingerprint.getUuid();
     }
+    
+    public String getLocalHostName(){
+    	String hostName = "";
+    	try {
+			hostName = InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			 LOGGER.info("");
+		}
+    	return hostName;
+    }
+    
 }

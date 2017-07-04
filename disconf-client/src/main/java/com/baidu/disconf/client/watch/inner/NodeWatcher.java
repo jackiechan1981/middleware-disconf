@@ -9,6 +9,7 @@ import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.baidu.disconf.client.config.DisClientConfig;
 import com.baidu.disconf.client.core.processor.DisconfCoreProcessor;
 import com.baidu.disconf.core.common.constants.DisConfigTypeEnum;
 import com.baidu.disconf.core.common.zookeeper.ZookeeperMgr;
@@ -122,10 +123,12 @@ public class NodeWatcher implements Watcher {
                 LOGGER.error("============GOT Expired  " + event.toString() + ": (" + monitorPath + "," + keyName
                         + "," + disConfigTypeEnum.getModelName() + ")======================");
 
-                // 重新连接
-                ZookeeperMgr.getInstance().reconnect();
+                if(DisClientConfig.getInstance().ENABLE_NODE_CALLBACK){
+                	// 重新连接
+                    ZookeeperMgr.getInstance().reconnect();
 
-                callback();
+                    callback();
+                }
             } else {
                 LOGGER.debug("============DEBUG MODE: GOT Expired  " + event.toString() + ": (" + monitorPath + ","
                         + "" + keyName + "," + disConfigTypeEnum.getModelName() + ")======================");

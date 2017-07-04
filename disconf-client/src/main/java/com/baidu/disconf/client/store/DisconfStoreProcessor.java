@@ -1,6 +1,7 @@
 package com.baidu.disconf.client.store;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.baidu.disconf.client.common.model.DisConfCommonModel;
@@ -81,4 +82,9 @@ public interface DisconfStoreProcessor {
      * 排除某个配置
      */
     void exclude(Set<String> keySet);
+    
+    /**
+     * 标示实例的临时节点map
+     */
+    Map<String, String> getTempChildPathMap();
 }
