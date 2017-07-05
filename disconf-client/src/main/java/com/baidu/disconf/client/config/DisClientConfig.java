@@ -203,6 +203,16 @@ public final class DisClientConfig {
     private static final String ENABLE_NODE_CALLBACK_CONF_NAME = "disconf.enable.node_callback.conf";
     @DisInnerConfigAnnotation(name = DisClientConfig.ENABLE_NODE_CALLBACK_CONF_NAME, defaultValue = "true")
     public boolean ENABLE_NODE_CALLBACK = true;
+    
+    /**
+     * 是否开启节点存活检查
+     *
+     * @author
+     * @since 1.0.0
+     */
+    private static final String ENABLE_NODE_EXISTS_CHECK_CONF_NAME = "disconf.enable.node_exists_check.conf";
+    @DisInnerConfigAnnotation(name = DisClientConfig.ENABLE_NODE_EXISTS_CHECK_CONF_NAME, defaultValue = "true")
+    public boolean ENABLE_NODE_EXISTS_CHECK = true;
 
     public List<String> getHostList() {
         return hostList;

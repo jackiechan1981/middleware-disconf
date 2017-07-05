@@ -79,8 +79,10 @@ public class DisconfAspectJ {
                 DisconfStoreProcessor disconfStoreProcessor =
                         DisconfStoreProcessorFactory.getDisconfStoreFileProcessor();
                 
-                //解决disconf和应用断连问题：重建过期节点
-                rebuildExpiredNodeIfNonWatchExecuted(disconfStoreProcessor, disconfFile.filename(), DisConfigTypeEnum.FILE);
+                if(DisClientConfig.getInstance().ENABLE_NODE_EXISTS_CHECK){
+                	//解决disconf和应用断连问题：重建过期节点
+                    rebuildExpiredNodeIfNonWatchExecuted(disconfStoreProcessor, disconfFile.filename(), DisConfigTypeEnum.FILE);
+                }
                 
                 Object ret = disconfStoreProcessor.getConfig(disconfFile.filename(), disconfFileItem.name());
                 if (ret != null) {
@@ -119,8 +121,10 @@ public class DisconfAspectJ {
             //
             DisconfStoreProcessor disconfStoreProcessor = DisconfStoreProcessorFactory.getDisconfStoreItemProcessor();
             
-            //解决disconf和应用断连问题：重建过期节点
-            rebuildExpiredNodeIfNonWatchExecuted(disconfStoreProcessor, disconfItem.key(), DisConfigTypeEnum.ITEM);
+            if(DisClientConfig.getInstance().ENABLE_NODE_EXISTS_CHECK){
+            	//解决disconf和应用断连问题：重建过期节点
+                rebuildExpiredNodeIfNonWatchExecuted(disconfStoreProcessor, disconfItem.key(), DisConfigTypeEnum.ITEM);
+            }
             
             Object ret = disconfStoreProcessor.getConfig(null, disconfItem.key());
             if (ret != null) {
@@ -156,8 +160,8 @@ public class DisconfAspectJ {
 		try {
 			nodeExists = ZookeeperMgr.getInstance().exists(tempChildPath);
 		} catch (Exception e) {
-			LOGGER.error(hostName + "-" + key + ", zkPath: " + tempChildPath + ", check exists failed! \t" + e.toString());
-			return;
+			LOGGER.info(hostName + "-" + key + ", zkPath: " + tempChildPath + ", check exists failed! \t" + e.toString());
+			nodeExists = false;
 		}
 		if (!nodeExists) {
 			LOGGER.info(hostName + "-" + key + ", zkPath: " + tempChildPath + ", is rebuilding!");
