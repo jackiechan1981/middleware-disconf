@@ -230,12 +230,12 @@
             <id>release</id>
             <distributionManagement>
                 <snapshotRepository>
-                    <id>nexus</id>
-                    <url>http://172.30.0.45:8081/nexus/content/groups/public</url>
+                    <id>nexus-release</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
                 </snapshotRepository>
                 <repository>
-                    <id>nexus</id>
-                    <url>http://172.30.0.45:8081/nexus/content/groups/public</url>
+                    <id>nexus-release</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
             </distributionManagement>
             <build>
