@@ -3,6 +3,7 @@ package com.baidu.disconf.client.store.inner;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +51,8 @@ public class DisconfCenterStore {
     // value: 配置项数据
     private Map<String, DisconfCenterItem> confItemMap = new HashMap<String, DisconfCenterItem>();
     
-  //解决disconf和应用断连问题：标示实例的临时节点  key: hostName:filename(主机名+配置文件名), value: fullzkPath(node节点全路径)
-    private Map<String, String> tempChildPathMap = new HashMap<String, String>();
+    //解决disconf和应用断连问题：标示实例的临时节点  key: hostName:DisConfigTypeEnum:filename(主机名+配置类型+配置文件名), value: fullzkPath(node节点全路径)
+    private Map<String, String> tempChildPathMap = new ConcurrentHashMap<String, String>();
 
     // 主备切换时的Key列表
     private List<String> activeBackupKeyList;

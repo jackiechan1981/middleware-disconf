@@ -12,6 +12,7 @@ import com.baidu.disconf.client.core.processor.DisconfCoreProcessorFactory;
 import com.baidu.disconf.client.fetcher.FetcherMgr;
 import com.baidu.disconf.client.support.registry.Registry;
 import com.baidu.disconf.client.watch.WatchMgr;
+import com.baidu.disconf.core.common.constants.DisConfigTypeEnum;
 
 /**
  * 核心处理器
@@ -81,8 +82,15 @@ public class DisconfCoreMgrImpl implements DisconfCoreMgr {
 
         disconfCoreProcessorFile.processOneItem(fileName);
     }
+    
+    @Override
+	public void processOneConfAndCallback(String key, DisConfigTypeEnum disConfigTypeEnum) throws Exception{
+    	DisconfCoreProcessor disconfCoreProcessor =
+                DisconfCoreProcessorFactory.getDisconfCoreProcessorByType(watchMgr, fetcherMgr, registry, disConfigTypeEnum);
+    	disconfCoreProcessor.updateOneConfAndCallback(key);
+	}
 
-    /**
+	/**
      * 特殊的，将仓库里的数据注入到 配置项、配置文件 的实体中
      */
     public void inject2DisconfInstance() {
