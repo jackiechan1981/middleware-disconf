@@ -150,6 +150,7 @@ public class WatchMgrImpl implements WatchMgr {
     
     /**
      * 解决disconf和应用断连问题： 将标示实例的临时节点数据保存至配置仓库
+     * 
      * @param key 配置文件或配置项 名称
      * @param mainTypeFullStr zookeeper节点全路径
      * @param disConfigTypeEnum 配置类型
@@ -158,7 +159,7 @@ public class WatchMgrImpl implements WatchMgr {
     	DisconfStoreProcessor disconfStoreProcessor = DisconfStoreProcessorFactory.getDisconfStoreProcessorByType(disConfigTypeEnum);
     	Map<String, String> tempChildPathMap = disconfStoreProcessor.getTempChildPathMap();
         String hostName = DisClientComConfig.getInstance().getLocalHostName();
-        tempChildPathMap.put(hostName + ":" + key, mainTypeFullStr);
+        tempChildPathMap.put(hostName + ":" + disConfigTypeEnum + ":" + key, mainTypeFullStr);
     }
-
+    
 }

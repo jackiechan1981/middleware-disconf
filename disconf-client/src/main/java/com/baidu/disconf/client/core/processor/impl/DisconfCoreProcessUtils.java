@@ -5,8 +5,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.baidu.disconf.client.DisconfMgr;
 import com.baidu.disconf.client.common.update.IDisconfUpdate;
+import com.baidu.disconf.client.config.inner.DisClientComConfig;
+import com.baidu.disconf.client.core.DisconfCoreMgr;
 import com.baidu.disconf.client.store.DisconfStoreProcessor;
+import com.baidu.disconf.core.common.constants.DisConfigTypeEnum;
+import com.baidu.disconf.core.common.zookeeper.ZookeeperMgr;
 
 /**
  * @author liaoqiqi
@@ -47,5 +52,40 @@ public class DisconfCoreProcessUtils {
             }
         }
     }
+    
+    /**
+     * 当会话过期，并且NodeWatch事件丢失时，重建此节点
+     * @param disconfStoreProcessor 仓库算子
+     * @param key 配置文件或配置项 名称
+     */
+	public static void rebuildExpiredNodeIfNonWatchExecuted(DisconfStoreProcessor disconfStoreProcessor, String key,
+			DisConfigTypeEnum disConfigTypeEnum) {
+		String hostName = DisClientComConfig.getInstance().getLocalHostName();
+		String pathKey = hostName + ":" + disConfigTypeEnum + ":" + key; 
+		String tempChildPath = disconfStoreProcessor.getTempChildPathMap().get(pathKey);
+		boolean nodeExists = true;
+		
+		//对当前重建的节点加锁，防止多个线程并发时同时检测到节点不存在，而重复创建
+		synchronized (tempChildPath) {
+			try {
+				nodeExists = ZookeeperMgr.getInstance().exists(tempChildPath);
+			} catch (Exception e) {
+				LOGGER.info(pathKey + ", zkPath: " + tempChildPath + ", check exists failed! \t" + e.toString());
+				nodeExists = false;
+			}
+			if (!nodeExists) {
+				LOGGER.info(pathKey + ", zkPath: " + tempChildPath + ", is rebuilding!");
+				try {
+					DisconfCoreMgr disconfCoreMgr = DisconfMgr.getInstance().getDisconfCoreMgr();
+					disconfCoreMgr.processOneConfAndCallback(key, disConfigTypeEnum);
+
+				} catch (Exception e) {
+					LOGGER.error(pathKey + ", zkPath: " + tempChildPath + ", rebuild failed! \t" + e.toString());
+				}
+
+				LOGGER.info(pathKey + ", zkPath: " + tempChildPath + ", rebuild successful!");
+			}
+		}
+	}
 
 }
