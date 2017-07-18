@@ -15,6 +15,7 @@ import com.baidu.disconf.client.core.DisconfCoreFactory;
 import com.baidu.disconf.client.core.DisconfCoreMgr;
 import com.baidu.disconf.client.scan.ScanFactory;
 import com.baidu.disconf.client.scan.ScanMgr;
+import com.baidu.disconf.client.schedule.NodeAliveCheckSchedule;
 import com.baidu.disconf.client.store.DisconfStoreProcessorFactory;
 import com.baidu.disconf.client.support.registry.Registry;
 import com.baidu.disconf.client.support.registry.RegistryFactory;
@@ -165,6 +166,10 @@ public class DisconfMgr implements ApplicationContextAware {
                 LOGGER.info("Conf Item Map: {}", data);
             }
         }
+        
+        //开始zookeeper节点存活检测
+        NodeAliveCheckSchedule.start();
+        
         LOGGER.info("******************************* DISCONF END *******************************");
     }
 
@@ -198,6 +203,8 @@ public class DisconfMgr implements ApplicationContextAware {
             }
         }
     }
+    
+    
 
     /**
      * @Description: 总关闭
@@ -215,6 +222,8 @@ public class DisconfMgr implements ApplicationContextAware {
             // close, 必须将其设置为False,以便重新更新
             isFirstInit = false;
             isSecondInit = false;
+            
+            NodeAliveCheckSchedule.close();
 
         } catch (Exception e) {
 
@@ -230,4 +239,9 @@ public class DisconfMgr implements ApplicationContextAware {
     public ApplicationContext getApplicationContext() {
         return applicationContext;
     }
+	
+	public DisconfCoreMgr getDisconfCoreMgr() {
+		return disconfCoreMgr;
+	}
+    
 }
