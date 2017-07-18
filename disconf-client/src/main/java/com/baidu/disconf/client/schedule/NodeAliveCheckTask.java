@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +29,8 @@ public class NodeAliveCheckTask implements Runnable {
 
 	@Override
 	public void run() {
+		
+		LOGGER.info("NodeAliveCheckTaskSchedule has been started a new round of zookeeper node alive check!\n");
 
 		Map<String, String> needRebuildConfs = new HashMap<String, String>();
 
@@ -86,6 +88,8 @@ public class NodeAliveCheckTask implements Runnable {
 		count.await();
 		LOGGER.info("a round of NodeAliveCheckTaskSchedule has been executed successful! "
 				+ needRebuildConfs.size() + " node has been rebuilded!");
+		
+		threadPool.shutdown();
 	}
 
 }

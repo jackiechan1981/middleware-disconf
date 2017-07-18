@@ -24,6 +24,8 @@ public class NodeAliveCheckSchedule {
 	//每十分钟检查一次
 	private final static int PERIOD = 10 * 60 * 1000;
 	
+	private static ScheduledExecutorService executeService = null;
+	
 	/**
 	 * 开始zookeeper节点存活检测
 	 */
@@ -31,10 +33,16 @@ public class NodeAliveCheckSchedule {
 		
 		if (DisClientConfig.getInstance().ENABLE_NODE_EXISTS_CHECK) {
 			
-			LOGGER.info("NodeAliveCheckTaskSchedule has been started a new round of zookeeper node alive check!\n");
+			LOGGER.info("start the NodeAliveCheckSchedule! Check zookeeper node alive in every ten minutes!");
 			
-			ScheduledExecutorService executeService = Executors.newSingleThreadScheduledExecutor();
+			executeService = Executors.newSingleThreadScheduledExecutor();
 			executeService.scheduleAtFixedRate(new NodeAliveCheckTask(), INITAL_DELAY, PERIOD, TimeUnit.MILLISECONDS);
+		}
+	}
+	
+	public static void close(){
+		if(executeService != null){
+			executeService.shutdown();
 		}
 	}
 	

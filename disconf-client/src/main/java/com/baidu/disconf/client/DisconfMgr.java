@@ -167,7 +167,6 @@ public class DisconfMgr implements ApplicationContextAware {
             }
         }
         
-        LOGGER.info("start the NodeAliveCheckSchedule! Check zookeeper node alive in every ten minutes!");
         //开始zookeeper节点存活检测
         NodeAliveCheckSchedule.start();
         
@@ -223,6 +222,8 @@ public class DisconfMgr implements ApplicationContextAware {
             // close, 必须将其设置为False,以便重新更新
             isFirstInit = false;
             isSecondInit = false;
+            
+            NodeAliveCheckSchedule.close();
 
         } catch (Exception e) {
 
